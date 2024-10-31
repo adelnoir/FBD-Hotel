@@ -82,7 +82,7 @@ def inserir_reserva(data_check_in, data_check_out, status):
 
 # Função para inserir novas reservas
 def inserir_pagamento(valor, data_pagamento, metodo):
-    # Seleciona a última reserva inserida
+    # Seleciona a última reserva inserida usando ORDENAR por id DESCENDENTE
     cursor.execute('SELECT id FROM reservas ORDER BY id DESC')
     reserva_id = cursor.fetchone()[0]
 
