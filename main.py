@@ -14,6 +14,7 @@ cursor.execute('''
     documento_identificacao TEXT NOT NULL
     )
     ''')
+
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS quartos(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,6 +23,7 @@ cursor.execute('''
     status TEXT NOT NULL
         )
     ''')
+
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS reservas(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,6 +36,7 @@ cursor.execute('''
     FOREIGN KEY (quarto_id) REFERENCES quartos(id)
         )
     ''')
+
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS pagamentos(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -56,7 +59,8 @@ def inserir_cliente(nome, email, telefone, documento_identificacao):
 
 # Função para inserir novos quartos
 def inserir_quarto(tipo, preco_noite, status):
-    cursor.execute('INSERT INTO quartos(tipo, preco_noite, status) VALUES (?, ?, ?)', (tipo, preco_noite, status))
+    cursor.execute('INSERT INTO quartos(tipo, preco_noite, status) VALUES (?, ?, ?)',
+                   (tipo, preco_noite, status))
     conn.commit()
     # print(f'Quarto {tipo} inserido com sucesso!')
 
@@ -82,12 +86,11 @@ def inserir_pagamento(valor, data_pagamento, metodo):
     cursor.execute('SELECT id FROM reservas ORDER BY id DESC')
     reserva_id = cursor.fetchone()[0]
 
-    cursor.execute('SELECT preco_noite FROM quartos ORDER BY id DESC')
-    preco_noite = cursor.fetchall()[0]
-
-    cursor.execute('SELECT status FROM quartos ORDER BY id DESC')
-    status_pagamento = cursor.fetchall()[0]
-
+    # cursor.execute('SELECT preco_noite FROM quartos ORDER BY id DESC')
+    # preco_noite = cursor.fetchall()[0]
+    #
+    # cursor.execute('SELECT status FROM quartos ORDER BY id DESC')
+    # status_pagamento = cursor.fetchall()[0]
 
     cursor.execute('INSERT INTO pagamentos(reserva_id, valor, data_pagamento, metodo) VALUES (?, ?, ?, ?)',
         (reserva_id, valor, data_pagamento, metodo))
@@ -138,7 +141,7 @@ cursor.execute('''
     WHERE reservas.status = 'Confirmada'
 ''')
 
-print("Listagem de todas as reservas ativas (reservas confirmadas) e respetivos clientes e quartos:\n--------------------------")
+print("\nListagem de todas as reservas ativas (reservas confirmadas) e respetivos clientes e quartos:\n--------------------------")
 resultado = cursor.fetchall()
 for reserva in resultado:
     print(f'Reserva ID: {reserva[0]}, Cliente: {reserva[1]}, Quarto: {reserva[2]}, Check-in: {reserva[3]}, Check-out: {reserva[4]}')
