@@ -11,7 +11,7 @@ cursor.execute('''
     nome TEXT NOT NULL,
     email TEXT NOT NULL,
     telefone TEXT NOT NULL,
-    documento_identificacao TEXT NOT NULL
+    numero_identificacao TEXT NOT NULL
     )
     ''')
 
@@ -51,9 +51,9 @@ cursor.execute('''
 conn.commit()
 
 # Função para inserir novos clientes
-def inserir_cliente(nome, email, telefone, documento_identificacao):
-    cursor.execute('INSERT INTO clientes(nome, email, telefone, documento_identificacao) VALUES (?, ?, ?, ?)',
-                   (nome, email, telefone, documento_identificacao))
+def inserir_cliente(nome, email, telefone, numero_identificacao):
+    cursor.execute('INSERT INTO clientes(nome, email, telefone, numero_identificacao) VALUES (?, ?, ?, ?)',
+                   (nome, email, telefone, numero_identificacao))
     conn.commit()
     # print(f'Cliente {nome} inserido com sucesso!')
 
@@ -121,7 +121,7 @@ inserir_reserva('2024-11-01', '2024-11-05', 'Confirmada')
 inserir_pagamento('120','2024-10-31','Cartão de crédito')
 
 # Cliente 2
-inserir_cliente('Miguel', 'miguelitofixolas20@gmail.com', '943586723', '262351233')
+inserir_cliente('Tiago', 'joao.tiago.stone@gmail.com', '929243648', '250745933')
 inserir_quarto('Duplo', '55', 'Em Manutenção')
 inserir_reserva('2024-12-04', '2024-12-12', 'Pendente')
 inserir_pagamento('385','2024-11-25','Transferência Bancária')
