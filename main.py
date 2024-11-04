@@ -127,7 +127,7 @@ inserir_reserva('2024-12-04', '2024-12-12', 'Pendente')
 inserir_pagamento('385','2024-11-25','Transferência Bancária')
 
 # Cliente 3
-inserir_cliente('Joana', 'joanalourencorego@gmail.com', '969711796', '213132255')
+inserir_cliente('Miguelito', 'miguelitofixolas23@gmail.com', '963751293', '213132255')
 inserir_quarto('Suite', '40', 'Disponível')
 inserir_reserva('2024-11-21', '2024-11-25', 'Confirmada')
 inserir_pagamento('120','2024-11-12','Cartão de crédito')
