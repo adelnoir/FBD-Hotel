@@ -158,14 +158,14 @@ def inserir_dados():
 
     print("\nInserir dados da reserva\n-------------------")
 
-    # 'format' é usado para especificar o formato em que as datas devem ser inseridas dia/mês/ano.
-    format = "%d/%m/%Y"
+    # 'formato' é usado para especificar o formato em que as datas devem ser inseridas dia/mês/ano.
+    formato = "%d/%m/%Y"
     while True:
         try:
             data_check_in = input("Insira a data do check-in (dd/mm/yyyy): ")
-            data_check_in_as_dt = datetime.datetime.strptime(data_check_in, format)
+            data_check_in_as_dt = datetime.datetime.strptime(data_check_in, formato)
             data_check_out = input("Insira a data do check-out (dd/mm/yyyy): ")
-            data_check_out_as_dt = datetime.datetime.strptime(data_check_out, format)
+            data_check_out_as_dt = datetime.datetime.strptime(data_check_out, formato)
             break
         except ValueError:
             print("Formato de data inválido! Por favor, insira no formato dd/mm/yyyy.")
@@ -203,7 +203,7 @@ def inserir_dados():
     while True:
         try:
             data_pagamento = input("Insira a data do pagamento (dd/mm/yyyy): ")
-            data_pagamento_as_dt = datetime.datetime.strptime(data_pagamento, format)
+            data_pagamento_as_dt = datetime.datetime.strptime(data_pagamento, formato)
             break
         except ValueError:
             print("Formato de data inválido! Por favor, insira no formato dd/mm/yyyy.")
