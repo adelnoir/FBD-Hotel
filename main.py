@@ -107,7 +107,12 @@ def inserir_dados():
     print("\nInserir dados do cliente\n-------------------")
 
     nome = input("Insira o nome do cliente: ").capitalize()
-    email = input("Insira o email: ")
+    while True:
+        email = input("Insira o email: ")
+        if "@" and "." not in email:
+            print("Insira um email válido. (Com @ e .)")
+        else:
+            break
 
     while True:
         telefone = input("Insira o telefone: ")
