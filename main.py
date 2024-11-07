@@ -5,7 +5,6 @@ import datetime
 conn = sqlite3.connect("hotel.db")
 cursor = conn.cursor()
 
-
 # Criação das tabelas: Cliente, Quartos, Reservas e Pagamentos
 def criar_tabelas():
     cursor.execute('''
@@ -175,7 +174,7 @@ def inserir_dados():
         preco_noite = 175
 
     preco_total = preco_noite * noite
-    print(f"O valor total a pagar por {noite} noites é de {preco_total}")
+    print(f"O valor total a pagar por {noite} noites é de {preco_total}€.")
 
     while True:
         try:
@@ -259,6 +258,7 @@ def apagar_dados():
 
 
 def main():
+    criar_tabelas()
     while True:
         inp = int(input(
             "O que quer fazer na base de dados? \n[1] - Inserir dados\n[2] - Apagar dados\n[3] - Enunciado\n[0] - Sair e listar dados\n "))
