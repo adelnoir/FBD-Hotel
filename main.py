@@ -174,8 +174,8 @@ def inserir_dados():
     elif tipo == "Suite":
         preco_noite = 175
 
-    preco = preco_noite * noite
-    print(f"O valor total a pagar por {noite} noites é de {preco}")
+    preco_total = preco_noite * noite
+    print(f"O valor total a pagar por {noite} noites é de {preco_total}")
 
     while True:
         try:
@@ -184,7 +184,7 @@ def inserir_dados():
         except ValueError:
             print("Valor inserido inválido! Por favor, insira um valor válido.")
 
-    if valor < preco:
+    if valor < preco_total:
         status = "Pendente"
     else:
         status = "Confirmada"
@@ -269,6 +269,7 @@ def main():
 
         elif inp == 2:
             apagar_dados()
+
         elif inp == 0:
             listar_dados()
             break  # Encerra o laço para sair do programa
