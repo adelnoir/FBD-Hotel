@@ -5,7 +5,6 @@ import datetime
 conn = sqlite3.connect("hotel.db")
 cursor = conn.cursor()
 
-
 # Criação das tabelas: Cliente, Quartos, Reservas e Pagamentos
 def criar_tabelas():
     cursor.execute('''
@@ -51,9 +50,7 @@ def criar_tabelas():
         )
     ''')
 
-
 conn.commit()
-
 
 def inserir_cliente(nome, email, telefone, numero_identificacao):
     """Função para inserir novos clientes."""
@@ -61,13 +58,11 @@ def inserir_cliente(nome, email, telefone, numero_identificacao):
                    (nome, email, telefone, numero_identificacao))
     conn.commit()
 
-
 def inserir_quarto(tipo, preco_noite, status):
     """Função para inserir novos quartos."""
     cursor.execute('INSERT INTO quartos(tipo, preco_noite, status) VALUES (?, ?, ?)',
                    (tipo, preco_noite, status))
     conn.commit()
-
 
 def inserir_reserva(data_check_in, data_check_out, status):
     """Função para inserir novas reservas."""
@@ -89,7 +84,6 @@ def inserir_reserva(data_check_in, data_check_out, status):
         (cliente_id, quarto_id, data_check_in_str, data_check_out_str, status))
     conn.commit()
 
-
 def inserir_pagamento(valor, data_pagamento, metodo):
     """Função para inserir novos pagamentos."""
     # Seleciona a última reserva inserida usando ORDENAR por id DESCENDENTE
@@ -103,7 +97,6 @@ def inserir_pagamento(valor, data_pagamento, metodo):
 
     conn.commit()
 
-
 def inserir_dados():
     """Função que insere os dados."""
     print("\nInserir dados do cliente\n-------------------")
@@ -111,29 +104,29 @@ def inserir_dados():
     nome = input("Insira o nome do cliente: ").capitalize()
     while True:
         email = input("Insira o email: ")
-        if "@" and "." not in email:
-            print("Insira um email válido. (Com @ e .)")
+        if email.count("@") != 1 or "." not in email:
+            print("Insira um email válido. (Com  @ e .)")
         else:
             break
 
     while True:
-        telefone = input("Insira o telefone: ")
+        telefone = input("Insira o número de telefone: ")
         if len(telefone) == 9:
             break
         else:
-            print("\nInsira um número de telefone válido.")
+            print("\nInsira um número de telefone válido. (9 dígitos)")
 
     while True:
         numero_identificacao = input("Insira o NIF: ")
         if len(numero_identificacao) == 9:
             break
         else:
-            print("\nInsira um NIF válido.")
+            print("\nInsira um NIF válido. (9 dígitos)")
 
     print("\nInserir dados do quarto\n-------------------")
 
     tipos = ["Individual", "Duplo", "Suite"]
-    print("Os tipos de quarto são", tipos)
+    print("Os tipos de quarto são: ", tipos)
 
     while True:
         tipo_index = int(input(
@@ -226,7 +219,6 @@ def inserir_dados():
     inserir_pagamento(valor, data_pagamento_as_dt, metodo)
     conn.commit()
 
-
 def listar_dados():
     """Função que lista os dados."""
     print("\nLista de Clientes:\n--------------")
@@ -253,7 +245,6 @@ def listar_dados():
     for pagamento in pagamentos:
         print(pagamento)
 
-
 def apagar_dados():
     """Função que apaga todas as tabelas e as cria de novo."""
     # Apaga-se todas as tabelas
@@ -264,13 +255,12 @@ def apagar_dados():
     criar_tabelas()  # Cria-se novas tabelas
     conn.commit()
 
-
 def main():
     # Chama a função 'criar_tabelas' caso não existam.
     criar_tabelas()
     while True:
         inp = int(input(
-            "O que quer fazer na base de dados? \n[1] - Inserir dados\n[2] - Apagar dados\n[3] - Enunciado\n[0] - Sair e listar dados\n "))
+            "\nO que quer fazer na base de dados? \n[1] - Inserir dados\n[2] - Apagar dados\n[3] - Enunciado\n[0] - Sair e listar dados\n "))
 
         if inp == 1:
             # Execução da função inserir dados.
@@ -299,7 +289,6 @@ def main():
         else:
             print("Opção inválida. Tente novamente.")
 
-
 # Listar todas as reservas ativas (reservas confirmadas) e respetivos clientes e quartos.
 def listar_reservas_ativas():
     cursor.execute('''
@@ -318,7 +307,6 @@ def listar_reservas_ativas():
         print(
             f'Reserva ID: {reserva[0]}, Cliente: {reserva[1]}, Quarto: {reserva[2]}, Check-in: {reserva[3]}, Check-out: {reserva[4]}')
 
-
 # Listar todos os quartos disponíveis.
 def listar_quartos_disponiveis():
     print("\nListagem de todos os quartos disponíveis:\n--------------------------")
@@ -331,14 +319,12 @@ def listar_quartos_disponiveis():
     for quarto in quartos:
         print(quarto)
 
-
 # Consultar todas as reservas de um cliente específico.
 def consultar_reserva(reserva_id):
     cursor.execute('SELECT * FROM reservas WHERE id = (?)', (reserva_id,))
     reserva_cliente = cursor.fetchall()
     conn.commit()
     print(f'\nAs reservas do cliente {reserva_id} são:', reserva_cliente)
-
 
 # Listar todos os pagamentos pendentes.
 def listar_pagamentos_pendentes():
