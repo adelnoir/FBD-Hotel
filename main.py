@@ -125,8 +125,21 @@ def inserir_dados():
 
     nome = input("Insira o nome do cliente: ")
     email = input("Insira o email: ")
-    telefone = input("Insira o telefone: ")
-    numero_identificacao = input("Insira o NIF: ")
+
+    while True:
+        telefone = input("Insira o telefone: ")
+        if len(telefone) == 9:
+            break
+        else:
+            print("\nInsira um número de telefone válido.")
+
+    while True:
+        numero_identificacao = input("Insira o NIF: ")
+        if len(numero_identificacao) == 9:
+            break
+        else:
+            print("\nInsira um NIF válido.")
+
 
     print("\nInserir dados do quarto\n-------------------")
 
@@ -170,18 +183,6 @@ def inserir_dados():
             break
         except ValueError:
             print("Formato de data inválido! Por favor, insira no formato dd/mm/yyyy.")
-
-    # statuses = ["Confirmada", "Pendente", "Cancelada"]
-    #
-    # while True:
-    #     status = int(input("\nInsira o status da reserva\n[0] - Confirmada\n[1] - Pendente\n[2] - Cancelada\n"))
-    #     if status in [0, 1, 2]:
-    #         status = statuses[status]
-    #         break
-    #     else:
-    #         print("\nMetodo inserido inválido! Por favor, insira um metodo válido.\n")
-
-
 
     print("\nInserir dados do pagamento\n-------------------")
 
