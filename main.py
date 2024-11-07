@@ -142,7 +142,7 @@ def inserir_dados():
         else:
             print("\nTipo de quarto inserido inválido! Por favor, insira um tipo de quarto válido.")
 
-    preco_noite = input("Preço por noite: ")
+
 
     statuses = ["Disponivel", "Ocupado", "Em Manutenção"]
     print("\nOs status de quarto são: ", statuses)
@@ -213,6 +213,9 @@ def inserir_dados():
 
     noite = (data_check_out_as_dt - data_check_in_as_dt).days
     print(f"O cliente vai ficar {noite} noites no hotel.")
+
+    preco = 0
+    preco_noite = 0
 
     if tipo == 0:
         preco_noite = 87
@@ -340,3 +343,4 @@ conn.close()
 # pagamentos = cursor.fetchall()
 # for pagamento in pagamentos:
 #     print(pagamento)
+
