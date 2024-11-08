@@ -137,7 +137,7 @@ def inserir_dados():
         else:
             print("\nTipo de quarto inserido inválido! Por favor, insira um tipo de quarto válido.")
 
-    estado = ["Disponivel", "Ocupado", "Em Manutenção"]
+    estado = ["Disponível", "Ocupado", "Em Manutenção"]
     print("\nOs status de quarto são: ", estado)
 
     while True:
@@ -274,20 +274,23 @@ def main():
             listar_dados()
             break  # Encerra o laço para sair do programa.
         elif inp == 3:
-            # Exercícios pedidos no enuncíado enviado pelo professor.
-            inp2 = input(
-                "Qual exercício deseja consultar?\n[0] Listar reservas ativas\n[2] Listar quartos disponiveis\n[3] Consultar reservas de um cliente especifico\n[4] Listar pagamentos pendentes\n ")
-            if inp2 == 0:
-                listar_reservas_ativas()
-            elif inp2 == 2:
-                listar_quartos_disponiveis()
-            elif inp2 == 3:
-                reserva_id = int(input("Insira o ID da reserva: "))
-                consultar_reserva(reserva_id)
-            elif inp2 == 4:
-                listar_pagamentos_pendentes()
-        else:
-            print("Opção inválida. Tente novamente.")
+            # Criamos um loop para o enunciado até que o usuário decida sair
+            while True:  
+                inp2 = input(
+                    "Qual exercício deseja consultar?\n[0] Listar reservas ativas\n[1] Listar quartos disponiveis\n[2] Consultar reservas de um cliente especifico\n[3] Listar pagamentos pendentes\n[4] Voltar ao menu principal\n")
+                if inp2 == '0':
+                    listar_reservas_ativas()
+                elif inp2 == '1':
+                    listar_quartos_disponiveis()
+                elif inp2 == '2':
+                    reserva_id = int(input("Insira o ID da reserva: "))
+                    consultar_reserva(reserva_id)
+                elif inp2 == '3':
+                    listar_pagamentos_pendentes()
+                elif inp2 == '4':
+                    break  # Se escolher 4, sai do loop do enunciado e volta ao menu principal
+                else:
+                    print("\nOpção inválida! Tente novamente.\n")
 
 # Listar todas as reservas ativas (reservas confirmadas) e respetivos clientes e quartos.
 def listar_reservas_ativas():
@@ -300,7 +303,7 @@ def listar_reservas_ativas():
     ''')
 
     print(
-        "\nListagem de todas as reservas ativas (reservas confirmadas) e respetivos clientes e quartos:\n--------------------------")
+        "\n\nListagem de todas as reservas ativas (reservas confirmadas) e respetivos clientes e quartos:\n--------------------------")
 
     reservas = cursor.fetchall()
     for reserva in reservas:
