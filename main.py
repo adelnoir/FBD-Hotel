@@ -277,7 +277,7 @@ def main():
         elif inp == 0:
             listar_dados()
             inp = int(input(
-                "Deseja sair?\n[1] - Sim\n[2] - Não\n"
+                "\nDeseja sair?\n[1] - Sim\n[2] - Não\n"
             ))
 
             if inp == 1:
