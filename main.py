@@ -5,6 +5,7 @@ import datetime
 conn = sqlite3.connect("hotel.db")
 cursor = conn.cursor()
 
+
 # Criação das tabelas: Cliente, Quartos, Reservas e Pagamentos
 def criar_tabelas():
     cursor.execute('''
@@ -50,7 +51,9 @@ def criar_tabelas():
         )
     ''')
 
+
 conn.commit()
+
 
 def inserir_cliente(nome, email, telefone, numero_identificacao):
     """Função para inserir novos clientes"""
@@ -58,11 +61,13 @@ def inserir_cliente(nome, email, telefone, numero_identificacao):
                    (nome, email, telefone, numero_identificacao))
     conn.commit()
 
+
 def inserir_quarto(tipo, preco_noite, status):
     """Função para inserir novos quartos"""
     cursor.execute('INSERT INTO quartos(tipo, preco_noite, status) VALUES (?, ?, ?)',
                    (tipo, preco_noite, status))
     conn.commit()
+
 
 def inserir_reserva(data_check_in, data_check_out, status):
     """Função para inserir novas reservas"""
@@ -105,6 +110,7 @@ def inserir_pagamento(valor, data_pagamento, metodo):
                    (reserva_id, valor, data_pagamento_str, metodo))
 
     conn.commit()
+
 
 def inserir_dados():
     print("\nInserir dados do cliente\n-------------------")
@@ -164,6 +170,7 @@ def inserir_dados():
             print("Formato de data inválido! Por favor, insira no formato dd/mm/yyyy.")
 
     print("\nInserir dados do pagamento\n-------------------")
+
 
     preco_noite = 0
     noite = (data_check_out_as_dt - data_check_in_as_dt).days
@@ -242,6 +249,7 @@ def listar_dados():
     for pagamento in resultado:
         print(pagamento)
 
+
 def apagar_dados():
     # print("\nApagar dados do cliente\n-------------------")
     # cliente_id = int(input("Insira o ID do cliente a ser apagado: "))
@@ -292,12 +300,14 @@ def listar_quartos_disponiveis():
     else:
         print("\nNão há quartos disponíveis.")
 
+
 # Consultar todas as reservas de um cliente específico
 def consultar_reserva(reserva_id):
     cursor.execute('SELECT * FROM reservas WHERE id = (?)', (reserva_id,))
     reserva_cliente = cursor.fetchall()
     conn.commit()
     print(f'\nAs reservas do cliente {reserva_id} são:', reserva_cliente)
+
 
 # Listar todos os pagamentos pendentes
 def listar_pagamentos_pendentes():
@@ -335,7 +345,7 @@ def main():
         elif inp == 0:
             listar_dados()
             inp = int(input(
-                "Deseja sair?\n[1] - Sim\n[2] - Não\n"
+                "\nDeseja sair?\n[1] - Sim\n[2] - Não\n"
             ))
 
             if inp == 1:
@@ -345,12 +355,17 @@ def main():
                 continue
 
         elif inp == 3:
+
             cursor.execute("SELECT COUNT(*) FROM clientes")
 
             if cursor.fetchone()[0] == 0:
+
                 print("\nNenhum dado encontrado. Por favor, insira dados antes de continuar.\n")
+
                 continue
-                
+
+
+
             while True:
                 try:
                     inp2 = int(input(
@@ -371,6 +386,7 @@ def main():
                     break
                 else:
                     print("\nOpção inválida. Tente novamente.")
+
         else:
             print("\nOpção inválida. Tente novamente.")
 
