@@ -5,7 +5,6 @@ import datetime
 conn = sqlite3.connect("hotel.db")
 cursor = conn.cursor()
 
-
 # Criação das tabelas: Cliente, Quartos, Reservas e Pagamentos
 def criar_tabelas():
     cursor.execute('''
@@ -51,9 +50,7 @@ def criar_tabelas():
         )
     ''')
 
-
 conn.commit()
-
 
 def inserir_cliente(nome, email, telefone, numero_identificacao):
     """Função para inserir novos clientes"""
@@ -61,34 +58,40 @@ def inserir_cliente(nome, email, telefone, numero_identificacao):
                    (nome, email, telefone, numero_identificacao))
     conn.commit()
 
-
 def inserir_quarto(tipo, preco_noite, status):
     """Função para inserir novos quartos"""
     cursor.execute('INSERT INTO quartos(tipo, preco_noite, status) VALUES (?, ?, ?)',
                    (tipo, preco_noite, status))
     conn.commit()
 
-
 def inserir_reserva(data_check_in, data_check_out, status):
     """Função para inserir novas reservas"""
     # Seleciona o último cliente inserido
     cursor.execute('SELECT id FROM clientes ORDER BY id DESC')
-    cliente_id = cursor.fetchone()[0]
+    cliente = cursor.fetchone()
+    if not cliente:
+        print("Erro: Nenhum cliente registrado. Por favor, insira os dados de um cliente primeiro.")
+        return
+
+    cliente_id = cliente[0]
 
     # Seleciona o último quarto inserido
     cursor.execute('SELECT id FROM quartos ORDER BY id DESC')
-    quarto_id = cursor.fetchone()[0]
+    quarto = cursor.fetchone()
+    if not quarto:
+        print("Erro: Nenhum quarto registrado. Por favor, insira os dados de um quarto primeiro.")
+        return
 
-    # Converte data_check_in e data_check_out para string no formato ISO 8601
+    quarto_id = quarto[0]
+
+    # Insere a nova reserva
     data_check_in_str = data_check_in.strftime('%Y-%m-%d')
     data_check_out_str = data_check_out.strftime('%Y-%m-%d')
-
-    # Insere a nova reserva com o cliente e quarto selecionados
     cursor.execute(
         'INSERT INTO reservas(cliente_id, quarto_id, data_check_in, data_check_out, status) VALUES (?, ?, ?, ?, ?)',
-        (cliente_id, quarto_id, data_check_in_str, data_check_out_str, status))
+        (cliente_id, quarto_id, data_check_in_str, data_check_out_str, status)
+    )
     conn.commit()
-
 
 def inserir_pagamento(valor, data_pagamento, metodo):
     """Função para inserir novos pagamentos"""
@@ -102,7 +105,6 @@ def inserir_pagamento(valor, data_pagamento, metodo):
                    (reserva_id, valor, data_pagamento_str, metodo))
 
     conn.commit()
-
 
 def inserir_dados():
     print("\nInserir dados do cliente\n-------------------")
@@ -130,14 +132,14 @@ def inserir_dados():
     print("Os tipos de quarto são", tipos)
 
     while True:
-        tipo_index = int(input("Qual é o tipo de quarto desejado pelo cliente?\n[0] - Individual\n[1] - Duplo\n[2] - Suite\n"))
+        tipo_index = int(input("\nQual é o tipo de quarto desejado pelo cliente?\n[0] - Individual\n[1] - Duplo\n[2] - Suite\n"))
         if tipo_index in [0, 1, 2]:
             tipo = tipos[tipo_index]
             break
         else:
             print("\nTipo de quarto inserido inválido! Por favor, insira um tipo de quarto válido.")
 
-    statuses = ["Disponivel", "Ocupado", "Em Manutenção"]
+    statuses = ["Disponível", "Ocupado", "Em Manutenção"]
     print("\nOs status de quarto são: ", statuses)
 
     while True:
@@ -162,7 +164,6 @@ def inserir_dados():
             print("Formato de data inválido! Por favor, insira no formato dd/mm/yyyy.")
 
     print("\nInserir dados do pagamento\n-------------------")
-
 
     preco_noite = 0
     noite = (data_check_out_as_dt - data_check_in_as_dt).days
@@ -216,7 +217,6 @@ def inserir_dados():
     inserir_pagamento(valor, data_pagamento_as_dt, metodo)
     conn.commit()
 
-
 def listar_dados():
     print("\nLista de Clientes:\n--------------")
     cursor.execute('SELECT * FROM clientes')
@@ -242,7 +242,6 @@ def listar_dados():
     for pagamento in resultado:
         print(pagamento)
 
-
 def apagar_dados():
     # print("\nApagar dados do cliente\n-------------------")
     # cliente_id = int(input("Insira o ID do cliente a ser apagado: "))
@@ -257,12 +256,71 @@ def apagar_dados():
     criar_tabelas()
     conn.commit()
 
+# Listar todas as reservas ativas (reservas confirmadas) e respetivos clientes e quartos
+def listar_reservas_ativas():
+
+    cursor.execute('''
+            SELECT reservas.id, clientes.nome, quartos.tipo, reservas.data_check_in, reservas.data_check_out
+            FROM reservas
+            JOIN clientes ON reservas.cliente_id = clientes.id
+            JOIN quartos ON reservas.quarto_id = quartos.id
+            WHERE reservas.status = 'Confirmada'
+        ''')
+    resultado = cursor.fetchall()
+    if resultado:
+        print("\nListagem de todas as reservas ativas (reservas confirmadas):\n--------------------------")
+        for reserva in resultado:
+            print(
+                f'Reserva ID: {reserva[0]}, Cliente: {reserva[1]}, Quarto: {reserva[2]}, Check-in: {reserva[3]}, Check-out: {reserva[4]}'
+            )
+    else:
+        print("\nNão há reservas confirmadas.")
+
+# Listar todos os quartos disponíveis.
+def listar_quartos_disponiveis():
+
+    cursor.execute('''
+        SELECT * FROM quartos
+        WHERE status = 'Disponível'
+        ''')
+
+    resultado = cursor.fetchall()
+    if resultado:
+        print("\nListagem de todos os quartos disponíveis:\n--------------------------")
+        for quarto in resultado:
+            print(quarto)
+    else:
+        print("\nNão há quartos disponíveis.")
+
+# Consultar todas as reservas de um cliente específico
+def consultar_reserva(reserva_id):
+    cursor.execute('SELECT * FROM reservas WHERE id = (?)', (reserva_id,))
+    reserva_cliente = cursor.fetchall()
+    conn.commit()
+    print(f'\nAs reservas do cliente {reserva_id} são:', reserva_cliente)
+
+# Listar todos os pagamentos pendentes
+def listar_pagamentos_pendentes():
+    print("\nListagem de todos os pagamentos pendentes\n--------------------------")
+    cursor.execute('''SELECT * FROM reservas
+                    WHERE status = 'Pendente'
+                    ''')
+
+    pagamentos = cursor.fetchall()
+    if not pagamentos:
+        print("Não há pagamentos pendentes.")
+    else:
+        for pagamento in pagamentos:
+            print(pagamento)
 
 def main():
+    # Faz a criação das tabelas na base de dados para evitar erros
+    criar_tabelas()
+
     while True:
         try:
             inp = int(input(
-                "O que quer fazer na base de dados? \n[1] - Inserir dados\n[2] - Apagar dados\n[3] - Enunciado\n[0] - Sair e listar dados\n "))
+                "\nO que quer fazer na base de dados? \n[1] - Inserir dados\n[2] - Apagar dados\n[3] - Enunciado\n[0] - Sair e listar dados\n "))
         except ValueError:
             print("Valor inserído inválido. Tente novamente.")
             continue
@@ -277,7 +335,7 @@ def main():
         elif inp == 0:
             listar_dados()
             inp = int(input(
-                "\nDeseja sair?\n[1] - Sim\n[2] - Não\n"
+                "Deseja sair?\n[1] - Sim\n[2] - Não\n"
             ))
 
             if inp == 1:
@@ -287,10 +345,16 @@ def main():
                 continue
 
         elif inp == 3:
+            cursor.execute("SELECT COUNT(*) FROM clientes")
+
+            if cursor.fetchone()[0] == 0:
+                print("\nNenhum dado encontrado. Por favor, insira dados antes de continuar.\n")
+                continue
+                
             while True:
                 try:
                     inp2 = int(input(
-                    "Qual exercício deseja consultar?\n[1] - Listar reservas ativas\n[2] - Listar quartos disponiveis\n[3] - Consultar reservas de um cliente especifico\n[4] - Listar pagamentos pendentes\n[0] - Voltar\n "))
+                    "\nQual exercício deseja consultar?\n[1] - Listar reservas ativas\n[2] - Listar quartos disponiveis\n[3] - Consultar reservas de um cliente especifico\n[4] - Listar pagamentos pendentes\n[0] - Voltar\n "))
                 except ValueError:
                     print("Valor inserído inválido. Tente novamente.")
                     continue
@@ -306,65 +370,13 @@ def main():
                 elif inp2 == 0:
                     break
                 else:
-                    print("Opção inválida. Tente novamente.")
-
+                    print("\nOpção inválida. Tente novamente.")
         else:
-            print("Opção inválida. Tente novamente.")
+            print("\nOpção inválida. Tente novamente.")
 
 
 # Chama o menu principal
 main()
 
-
-
-# Listar todas as reservas ativas (reservas confirmadas) e respetivos clientes e quartos
-def listar_reservas_ativas():
-    cursor.execute('''
-        SELECT reservas.id, clientes.nome, quartos.tipo, reservas.data_check_in, reservas.data_check_out
-        FROM reservas
-        JOIN clientes ON reservas.cliente_id = clientes.id
-        JOIN quartos ON reservas.quarto_id = quartos.id
-        WHERE reservas.status = 'Confirmada'
-    ''')
-
-    print(
-        "\nListagem de todas as reservas ativas (reservas confirmadas) e respetivos clientes e quartos:\n--------------------------")
-    resultado = cursor.fetchall()
-    for reserva in resultado:
-        print(
-            f'Reserva ID: {reserva[0]}, Cliente: {reserva[1]}, Quarto: {reserva[2]}, Check-in: {reserva[3]}, Check-out: {reserva[4]}')
-
-
-# Listar todos os quartos disponíveis.
-def listar_quartos_disponiveis():
-    print("\nListagem de todos os quartos disponíveis:\n--------------------------")
-    cursor.execute('''
-        SELECT * FROM quartos
-        WHERE status = 'Disponível'
-        ''')
-
-    resultado = cursor.fetchall()
-    for quarto in resultado:
-        print(quarto)
-
-
-# Consultar todas as reservas de um cliente específico
-def consultar_reserva(reserva_id):
-    cursor.execute('SELECT * FROM reservas WHERE id = (?)', (reserva_id,))
-    reserva_cliente = cursor.fetchall()
-    conn.commit()
-    print(f'\nAs reservas do cliente {reserva_id} são:', reserva_cliente)
-
-
-# Listar todos os pagamentos pendentes
-def listar_pagamentos_pendentes():
-    print("\nListagem de todos os pagamentos pendentes\n--------------------------")
-    cursor.execute('''SELECT * FROM reservas
-                    WHERE status = 'Pendente'
-                    ''')
-
-    pagamentos = cursor.fetchall()
-    for pagamento in pagamentos:
-        print(pagamento)
-
+# Fecha a conexão com a base de daos
 conn.close()
